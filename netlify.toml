@@ -1,0 +1,13 @@
+# Netlify bouwt bij elke push naar main de hele site:
+# de hub (/) en de drie apps (/huishoudboekje/, /vermogen/, /onderhoud/).
+# Het bouwscript staat in bouw-alles.mjs; het resultaat komt in thuis-hub/deploy.
+# _headers en _redirects worden door "combine" in die map gezet (niet hier).
+
+[build]
+  command = "npm run build"
+  publish = "thuis-hub/deploy"
+
+[build.environment]
+  NODE_VERSION = "22"
+  # Google Drive-sleutels (VITE_GOOGLE_CLIENT_ID, VITE_GOOGLE_API_KEY, VITE_GOOGLE_APP_ID)
+  # NIET hier invullen, maar in Netlify: Site configuration → Environment variables.

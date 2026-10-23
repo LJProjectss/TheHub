@@ -1,0 +1,211 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Thuis-stijl: zelfde letter als de hub en de andere apps (meegeleverd, geen externe verzoeken). */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("./fonts/inter.woff2") format("woff2");
+}
+
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "cv11";
+}
+
+.hb-app {
+  --hb-shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 8px 24px -12px rgba(16, 24, 40, 0.12);
+  --hb-shadow-hi: 0 24px 60px -20px rgba(8, 16, 32, 0.45);
+  --hb-ring: rgba(43, 100, 200, 0.22);
+}
+.hb-app.dark {
+  --hb-shadow: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 8px 24px -12px rgba(0, 0, 0, 0.6);
+  --hb-shadow-hi: 0 24px 60px -20px rgba(0, 0, 0, 0.8);
+  --hb-ring: rgba(111, 161, 242, 0.3);
+}
+
+/* Kaarten: ronder, met een zachte schaduw in plaats van alleen een rand. */
+.hb-card {
+  box-shadow: var(--hb-shadow);
+}
+.hb-dialog {
+  box-shadow: var(--hb-shadow-hi);
+}
+
+/* Knoppen */
+.hb-btn-primary {
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.1), 0 6px 14px -6px rgba(43, 100, 200, 0.6);
+}
+.hb-btn-primary:hover:not(:disabled) {
+  filter: brightness(1.07);
+}
+.hb-btn-secondary {
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+}
+.hb-btn:focus-visible {
+  outline: 2px solid var(--field-accent, #2b64c8);
+  outline-offset: 2px;
+}
+
+/* Bedragen staan netjes onder elkaar. */
+.hb-app td,
+.hb-app th,
+.hb-money {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Zijbalk: actieve pagina met een accentstreepje links. */
+.hb-nav-item {
+  position: relative;
+}
+.hb-nav-item[aria-current="page"]::before {
+  content: "";
+  position: absolute;
+  left: -12px;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: #6fa1f2;
+}
+.hb-nav-item:not([aria-current="page"]):hover {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+  color: #ffffff !important;
+}
+
+/* Tabbalk onderaan (telefoon): doorschijnend, actieve tab met een pil achter het icoon. */
+.hb-tabbar {
+  backdrop-filter: saturate(180%) blur(16px);
+  -webkit-backdrop-filter: saturate(180%) blur(16px);
+}
+.hb-tab-icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 28px;
+  border-radius: 999px;
+  transition: background-color 0.15s;
+}
+
+/* Grafieken (Recharts): rustigere rasterlijnen en assen. */
+.hb-app .recharts-cartesian-grid line {
+  stroke-dasharray: 2 4;
+}
+.hb-app .recharts-cartesian-grid-vertical line,
+.hb-app .recharts-cartesian-axis-line,
+.hb-app .recharts-cartesian-axis-tick-line {
+  stroke-opacity: 0;
+}
+
+/* Formuliervelden volgen het actieve thema (variabelen worden in App gezet). */
+input,
+select,
+textarea {
+  background-color: var(--field-bg, #ffffff);
+  color: var(--field-text, #172033);
+  transition: box-shadow 0.15s, border-color 0.15s;
+}
+
+/* Duidelijke focusrand op velden. */
+.hb-app input:not([type="checkbox"]):not([type="radio"]):focus-visible,
+.hb-app select:focus-visible,
+.hb-app textarea:focus-visible {
+  outline: none;
+  border-color: var(--field-accent, #2b64c8) !important;
+  box-shadow: 0 0 0 3px var(--hb-ring);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--field-placeholder, #94a3b8);
+}
+
+input[type="checkbox"] {
+  accent-color: var(--field-accent, #2b64c8);
+}
+
+.dark input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
+/* Privacymodus: bedragen (en grafiekassen/-tooltips) vervagen. De waas schaalt mee met de
+   lettergrootte, zodat ook grote getallen onleesbaar zijn. Tik op een bedrag toont alles.
+   Bewust geen overgangsanimatie: bij het verlaten van de app moet de waas er meteen staan. */
+[data-privacy="hidden"] .hb-money,
+[data-privacy="hidden"] .recharts-yAxis .recharts-cartesian-axis-tick-value,
+[data-privacy="hidden"] .recharts-tooltip-wrapper {
+  filter: blur(0.4em);
+  user-select: none;
+}
+[data-privacy="hidden"] .hb-money {
+  cursor: pointer;
+}
+/* Een bedragveld dat u aan het bewerken bent, wordt wel scherp getoond. */
+[data-privacy="hidden"] input.hb-money:focus {
+  filter: none;
+}
+
+/* Printen (bv. het Jaaroverzicht): alleen de inhoud, zonder menu's en knoppen.
+   App schakelt tijdens het printen naar het lichte thema. */
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 12mm;
+  }
+  .no-print,
+  aside {
+    display: none !important;
+  }
+  .hb-app {
+    display: block !important;
+    height: auto !important;
+    background-color: #fff !important;
+  }
+  .hb-main {
+    overflow: visible !important;
+    padding: 0 !important;
+  }
+  .hb-card,
+  .hb-dialog {
+    box-shadow: none !important;
+  }
+  .hb-print-table {
+    overflow: visible !important;
+  }
+  .hb-print-table td,
+  .hb-print-table th {
+    position: static !important;
+  }
+  [data-privacy="hidden"] .hb-money {
+    filter: none;
+  }
+  /* Maandrapport: staand A4, blokken niet over twee pagina's, kleuren van de balkjes meenemen. */
+  .hb-month-report {
+    page: maandrapport;
+    max-width: none !important;
+  }
+  .hb-report-block {
+    break-inside: avoid;
+  }
+  .hb-print-color {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+@page maandrapport {
+  size: A4 portrait;
+  margin: 14mm;
+}
+
+/* Waas over de hele app zodra die naar de achtergrond gaat (voor de appkiezer). */
+.hb-shield {
+  display: none;
+}
+:root[data-shield="on"] .hb-shield {
+  display: flex;
+}
