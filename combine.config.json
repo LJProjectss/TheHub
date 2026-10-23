@@ -1,0 +1,9 @@
+{
+  "uitvoer": "deploy",
+  "hub": "dist",
+  "apps": [
+    { "map": "huishoudboekje", "dist": "../huishoudboekje-src/dist" },
+    { "map": "vermogen", "dist": "../vermogensoverzicht-broncode/vermogensoverzicht/dist" },
+    { "map": "onderhoud", "dist": "../onderhoudslogboek/dist" }
+  ]
+}
